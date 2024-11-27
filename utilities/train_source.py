@@ -162,7 +162,7 @@ best_acc = 0.0
 train_loss_history = []
 test_acc_history = []
 
-for epoch in range(200):
+for epoch in range(100):
     net.train()
     epoch_loss = 0.0
     for batch_idx, (data, labels) in enumerate(train_loader):
