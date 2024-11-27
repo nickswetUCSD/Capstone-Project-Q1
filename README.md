@@ -22,6 +22,8 @@ python utilities/train_source.py --loss cross_entropy
 ```
 `loss` can be either `cross_entropy` for cross-entropy loss or `poly` for polyloss.
 
+**Note:** The code runs much faster on a GPU, so it is recommended to use one.
+
 Then, to run test-time adaptation on the target domain, run:
 ```bash
 python utilities/test_pseudolabels.py --pseudo_label hard
