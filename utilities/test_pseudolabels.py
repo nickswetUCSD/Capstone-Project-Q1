@@ -75,6 +75,8 @@ for severity in severity_list:
         net_test = copy.deepcopy(net)
 
         acc = 0.0
+        step_acc_list = []  # To store accuracy after each gradient descent step
+
         for x_curr, y_curr in test_loader:
             x_curr, y_curr = x_curr.to(device), y_curr.to(device)
             x_curr.requires_grad = False
@@ -94,14 +96,21 @@ for severity in severity_list:
                 if param.grad is not None:
                     param.data -= 1e-3 * param.grad  # Learning rate for TTA adaptation
 
-            # Update accuracy
+            # Compute accuracy after this step
             outputs_new = net_test(x_curr)
+            step_accuracy = (outputs_new.max(1)[1] == y_curr).float().mean().item()
+            step_acc_list.append(step_accuracy)
+
+            # Update overall accuracy
             acc += (outputs_new.max(1)[1] == y_curr).float().sum()
 
         acc /= subset_size
         err = 1.0 - acc
         print(f"Error for {corruption_type} at severity {severity}: {err:.2%}")
-        error_dict[corruption_type][severity] = err.item()
+        error_dict[corruption_type][severity] = {
+            "error": err.item(),
+            "step_accuracy": step_acc_list  # Store accuracy per step
+        }
 
 # Save results to JSON
 with open("progress/error_rates_tta.json", "w") as f:
