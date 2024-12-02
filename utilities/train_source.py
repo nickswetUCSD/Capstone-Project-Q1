@@ -12,6 +12,7 @@ from robustbench.data import load_cifar10c
 import copy
 import json
 import argparse
+import os
 from models import Normalized_ResNet
 from collections import defaultdict
 
@@ -47,6 +48,13 @@ class PolyLoss(nn.Module):
         return ce_loss + poly_term
 
 save_path = 'saved_models/pretrained/trained_model.pth'
+directory = os.path.dirname(save_path)
+if not os.path.exists(directory):
+    os.makedirs(directory)
+    print(f"Directory '{directory}' created.")
+else:
+    print(f"Directory '{directory}' already exists.")
+
 net = Normalized_ResNet(depth=26)
 net.to(device)
 # net = torch.nn.DataParallel(net)
@@ -117,9 +125,24 @@ for epoch in range(100):
         best_acc = acc 
         torch.save({"net": net.state_dict()}, save_path)
 
-with open('progress/test_acc_history.txt', 'w') as f:
+test_acc_path = 'progress/test_acc_history.txt'
+train_loss_path = 'progress/train_loss_history.txt'
+
+# Create only the parent directory, not the full path
+directory = os.path.dirname(test_acc_path)
+if not os.path.exists(directory):
+    os.makedirs(directory)
+    print(f"Directory '{directory}' created.")
+else:
+    print(f"Directory '{directory}' already exists.")
+
+# Write history to files
+with open(test_acc_path, 'w') as f:
     for number in test_acc_history:
         f.write(f'{number}\n')
-with open('progress/train_loss_history.txt', 'w') as f:
+    print(f'Test accuracy history written to {test_acc_path}')
+
+with open(train_loss_path, 'w') as f:
     for number in train_loss_history:
         f.write(f'{number}\n')
+    print(f'Train loss history written to {train_loss_path}')

@@ -1,0 +1,28 @@
+# Ignore Python bytecode files
+__pycache__/
+*.py[cod]
+
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore tar files
+*.tar
+
+# Ignore data directory
+data/
+
+# Ignore progress directory
+progress/
+
+# Ignore saved models
+saved_models/
+
+# Ignore temporary or log files
+*.log
+*.tmp
+
+# Ignore environment files
+.env
+
+# Ignore requirements changes if temporary
+requirements.txt
